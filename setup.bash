@@ -111,21 +111,22 @@ function check_and_append_string() {
 
 function config_hardware() {
 
+    config_file="/boot/firmware/config.txt"
     # raspi-config
     sudo raspi-config nonint do_i2c 0  # 激活I2C
     sudo raspi-config nonint do_fan 0  # 激活风扇
-    sudo sed -i 's/gpiopin=14/gpiopin=18/' /boot/config.txt
-    sudo sed -i 's/temp=80000/temp=60000/' /boot/config.txt  # 设置风扇GPIO和激活温度为60℃
+    sudo sed -i 's/gpiopin=14/gpiopin=18/' $config_file
+    sudo sed -i 's/temp=80000/temp=60000/' $config_file  # 设置风扇GPIO和激活温度为60℃
     # open SPI
     sudo raspi-config nonint do_spi 0
     # -------------------------------
     # 超频配置
     # -------------------------------
-    config_file="/boot/firmware/config.txt"
     arm_freq="arm_freq=2000"#CPU频率，默认1800Mhz，可用范围<=2147Mhz（当然，越高越不稳定）
     over_voltage="over_voltage=10"#电压偏移，默认0，可用范围<=10*10^-2V
     core_freq="core_freq=750"#核心频率，默认500Mhz，可用范围<=750Mhz
     arm_64bit="arm_64bit=0" #32bit还是64bit，必须是32bit，不然没法使用博创的32位的so库
+
     echo "-超频配置参数-"
     echo "ARM主频设置为'$arm_freq'Mhz，默认1500Mhz，推荐范围<=2147Mhz"
     check_and_append_string "$config_file" "$arm_freq"
@@ -136,6 +137,7 @@ function config_hardware() {
     echo "确认系统为32bit"
     check_and_append_string "$config_file" "$arm_64bit"
 
+    check_and_append_string "$config_file" "avoid_warnings=1"
     echo "注意如果超频设置更改后必须要重启后才会生效"
 
     sudo apt-get install -y -q libtinfo-dev raspberrypi-kernel-headers libpigpiod-if2-1 pigpiod
