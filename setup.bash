@@ -2,13 +2,13 @@
 
 # apt source
 
-APT_FILE_PATH="/etc/apt/sources.list"
+#APT_FILE_PATH="/etc/apt/sources.list"
 
 
-sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main contrib non-free-firmware' > $APT_FILE_PATH"
-sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free-firmware' >> $APT_FILE_PATH"
-sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian bookworm-updates main contrib non-free-firmware' >> $APT_FILE_PATH"
-sudo rm -rf
+#sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main contrib non-free-firmware' > $APT_FILE_PATH"
+#sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free-firmware' >> $APT_FILE_PATH"
+#sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian bookworm-updates main contrib non-free-firmware' >> $APT_FILE_PATH"
+
 
 
 sudo apt update
