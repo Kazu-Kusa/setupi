@@ -6,8 +6,8 @@
 
 
 #sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main contrib non-free-firmware' > $APT_FILE_PATH"
-#sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free-firmware' >> $APT_FILE_PATH"
-#sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian bookworm-updates main contrib non-free-firmware' >> $APT_FILE_PATH"
+#sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free-firmware' >> $APT_FILE_PATH"
+#sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian bookworm-updates main contrib non-free-firmware' >> $APT_FILE_PATH"
 
 
 
