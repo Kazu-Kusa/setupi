@@ -1,11 +1,14 @@
 #!/bin/sh
 
 # apt source
-APT_FILE_PATH=/etc/apt/sources.list
-sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ bullseye main non-free contrib rpi' > $APT_FILE_PATH"
-sudo sh -c "echo 'deb-src https://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ bullseye main non-free contrib rpi' >> $APT_FILE_PATH"
-sudo sh -c "echo 'deb http://mirrors.ustc.edu.cn/raspbian/raspbian/ bullseye main contrib non-free rpi' >> $APT_FILE_PATH"
 
+APT_FILE_PATH="/etc/apt/sources.list"
+
+
+sudo sh -c "echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main contrib non-free-firmware' > $APT_FILE_PATH"
+sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free-firmware' >> $APT_FILE_PATH"
+sudo sh -c "echo 'https://mirrors.tuna.tsinghua.edu.cn/debian bookworm-updates main contrib non-free-firmware' >> $APT_FILE_PATH"
+sudo rm -rf
 
 
 sudo apt update
@@ -14,10 +17,10 @@ sudo apt upgrade -y
 WORK_ROOT=$(pwd)
 echo $WORK_ROOT
 
-PYTHON_VERSION="3.11.0"  # 要判断的Python版本
+PYTHON_VERSION="3.11.2"  # 要判断的Python版本
 
 # 初始化临时目录，并设定任何人可读写
-TEMP_DIR_PATH="/home/pi/temp"
+TEMP_DIR_PATH="$WORK_ROOT/temp"
 mkdir $TEMP_DIR_PATH || True
 sudo chmod 777 $TEMP_DIR_PATH
 
@@ -118,7 +121,7 @@ function config_hardware() {
     # -------------------------------
     # 超频配置
     # -------------------------------
-    config_file="/boot/config.txt"
+    config_file="/boot/firmware/config.txt"
     arm_freq="arm_freq=2000"#CPU频率，默认1800Mhz，可用范围<=2147Mhz（当然，越高越不稳定）
     over_voltage="over_voltage=10"#电压偏移，默认0，可用范围<=10*10^-2V
     core_freq="core_freq=750"#核心频率，默认500Mhz，可用范围<=750Mhz
