@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # apt source
-
+# currently there is no official apt source for bookworm
 #APT_FILE_PATH="/etc/apt/sources.list"
 
 
