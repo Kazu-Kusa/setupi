@@ -167,5 +167,3 @@ OPENCV_LIB="export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1"
 sh -c "echo $OPENCV_LIB >> /etc/profile"
 
 
-sudo gpg --keyserver keyserver.ubuntu.com --recv-keys KEY_ID
-sudo gpg -a --export KEY_ID | sudo apt-key add -
