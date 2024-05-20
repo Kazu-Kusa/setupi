@@ -1,0 +1,8 @@
+#!/bin/sh
+
+git clone https://github.com/Kazu-Kusa/kazu.git
+
+cd kazu||exit 1
+
+pdm install -v
+
