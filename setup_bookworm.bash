@@ -114,11 +114,9 @@ function config_hardware() {
     config_file="/boot/firmware/config.txt"
     # raspi-config
     sudo raspi-config nonint do_i2c 0  # 激活I2C
-    sudo raspi-config nonint do_fan 0  # 激活风扇
-    sudo sed -i 's/gpiopin=14/gpiopin=18/' $config_file
-    sudo sed -i 's/temp=80000/temp=60000/' $config_file  # 设置风扇GPIO和激活温度为60℃
-    # open SPI
+    sudo raspi-config nonint do_fan 0 18 60000 # 激活风扇
     sudo raspi-config nonint do_spi 0
+    sudo raspi-config nonint do_rgpio 0
     # -------------------------------
     # 超频配置
     # -------------------------------
