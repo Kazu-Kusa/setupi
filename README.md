@@ -8,12 +8,12 @@ Download the script to anywhere you want
 
 1. **Use `curl`**
 ```bash
-curl -O https://raw.githubusercontent.com/Kazu-Kusa/setupi/main/setup.bash
+curl -O https://raw.githubusercontent.com/Kazu-Kusa/setupi/main/Makefile
 ```
 
 2. **Use `wget`**
 ```bash
-wget https://raw.githubusercontent.com/Kazu-Kusa/setupi/main/setup.bash
+wget https://raw.githubusercontent.com/Kazu-Kusa/setupi/main/Makefile
 ```
 
 3. **use `git`**
@@ -21,7 +21,7 @@ wget https://raw.githubusercontent.com/Kazu-Kusa/setupi/main/setup.bash
 ```bash
 git clone https://github.com/Kazu-Kusa/setupi.git
 ```
-   get to the cloned repo, and you should find the `setup.bash`
+   get to the cloned repo, and you should find the `Makefile` in `setupi`
 ```bash
 cd setupi
 ls
@@ -30,7 +30,13 @@ ls
 
 ## Usage
 
-You can execute the script at anywhere
+Use with `make`
+
 ```shell
-sudo bash setup.bash
+make all
 ``` 
+Get help using
+
+```shell
+make help
+```
