@@ -5,11 +5,23 @@ TEMP_DIR := $(WORK_ROOT)/temp
 PYTHON_VERSION := 3.11.0
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
-
+CONFIG_FILE := /boot/config.txt
+ARM_FREQ := arm_freq=2000
+OVER_VOLTAGE := over_voltage=10
+CORE_FREQ := core_freq=750
+ARM_64BIT := arm_64bit=0
 .PHONY: all setup_environment install_python check_modules install_wiringpi config_hardware clean install_sysbench install_kazu bench install_utils
 
-all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu
-
+all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
+# 检查并追加字符串到文件的函数
+define check-and-append-string
+	if grep -q $(2) $(1); then \
+		echo "String '$(2)' already exists in the file '$(1)', do nothing."; \
+	else \
+		echo "$(2)" >> $(1); \
+		echo "String '$(2)' appended to the file '$(1)."; \
+	fi
+endef
 
 set_apt_mirror:
 	@echo "Setting apt mirror..."
@@ -92,6 +104,15 @@ install_kazu: install_git setup_pdm
 	cd kazu && \
 	pdm add --save-only https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl && \
 	pdm install -v
+
+overclock:
+	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
+	$(call check-and-append-string,$(CONFIG_FILE),$(OVER_VOLTAGE))
+	$(call check-and-append-string,$(CONFIG_FILE),$(CORE_FREQ))
+	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_64BIT))
+	$(call check-and-append-string,$(CONFIG_FILE),"avoid_warnings=1")
+	@echo "注意：如果超频设置更改后必须要重启后才会生效"
+
 bench:install_sysbench
 	sysbench cpu --cpu-max-prime=10000 --threads=4 run
 
@@ -114,3 +135,4 @@ help:
 	@echo "clone_kazu: clone kazu"
 	@echo "bench: bench"
 	@echo "install_utils: install utils"
+	@echo "overclock: overclock"
