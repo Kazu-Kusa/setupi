@@ -6,10 +6,13 @@ PYTHON_VERSION := 3.11.0
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
 CONFIG_FILE := /boot/config.txt
-ARM_FREQ := arm_freq=2000
+ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
 CORE_FREQ := core_freq=750
 ARM_64BIT := arm_64bit=0
+KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
+CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
+NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
 .PHONY: all setup_environment install_python check_modules install_wiringpi config_hardware clean install_sysbench install_kazu bench install_utils
 
 all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
@@ -100,9 +103,9 @@ install_sysbench:
 install_kazu: install_git setup_pdm
 	@echo "Cloning kazu..."
 	cd $(WORK_ROOT) && \
-	git clone https://github.com/Kazu-Kusa/kazu.git && \
-	cd kazu && \
-	pdm add --save-only https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl && \
+	git clone $(KAZU_REPO) && \
+	cd kazu  && \
+	pdm add --save-only $(CV_URL) $(NP_URL) && \
 	pdm install -v
 
 overclock:
@@ -124,15 +127,15 @@ install_utils: upgrade_apt
 
 help:
 	@echo "all: all"
-	@echo "setup_environment: setup environment"
-	@echo "install_python: install python dependencies"
-	@echo "check_modules: check python modules"
-	@echo "install_wiringpi: install wiringpi"
-	@echo "config_hardware: config hardware"
-	@echo "clean: clean up"
-	@echo "install_sysbench: install sysbench"
-	@echo "install_fish: install fish"
-	@echo "clone_kazu: clone kazu"
-	@echo "bench: bench"
+	@echo "setup_environment: setup environment for installation of the project"
+	@echo "install_python: install python$(PYTHON_VERSION) interpreter"
+	@echo "check_modules: check python modules' normal function"
+	@echo "install_wiringpi: install wiringpi which is required to control the fan"
+	@echo "config_hardware: config hardware to fit the project"
+	@echo "clean: clean up temp files"
+	@echo "install_sysbench: install sysbench using apt"
+	@echo "install_fish: install fish using apt"
+	@echo "clone_kazu: clone kazu repo from github, see $(KAZU_REPO)"
+	@echo "bench: benchmark with sysbench"
 	@echo "install_utils: install utils"
-	@echo "overclock: overclock"
+	@echo "overclock: overclock settings $(ARM_FREQ)| $(OVER_VOLTAGE)| $(CORE_FREQ)| $(ARM_64BIT)"
