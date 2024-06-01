@@ -13,7 +13,7 @@ ARM_64BIT := arm_64bit=0
 KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
 CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
 NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
-.PHONY: all setup_environment install_python check_modules install_wiringpi config_hardware clean install_sysbench install_kazu bench install_utils
+.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help
 
 all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
 # 检查并追加字符串到文件的函数
