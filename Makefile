@@ -52,7 +52,7 @@ install_python: setup_environment
 		wget $(MIRROR_HUAWEICLOUD)/python/$(PYTHON_VERSION)/Python-$(PYTHON_VERSION).tar.xz && \
 		tar -xf Python-$(PYTHON_VERSION).tar.xz && \
 		cd Python-$(PYTHON_VERSION) && \
-		./configure --enable-optimizations && \
+		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
 		sudo make install; \
 	else \
