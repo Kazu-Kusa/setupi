@@ -13,7 +13,7 @@ ARM_64BIT := arm_64bit=0
 KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
 CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
 NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
-.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help
+.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help install_git
 
 all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
 # 检查并追加字符串到文件的函数
@@ -45,7 +45,7 @@ setup_environment:
 
 install_python: setup_environment
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
-	if ! python3 --version 2>&1 | grep -qF $PYTHON_VERSION; then \
+	if ! python3 --version 2>&1 | grep -qF $(PYTHON_VERSION); then \
 		echo "Python $(PYTHON_VERSION) not found, installing dependencies..."; \
 		sudo apt install -y build-essential libffi-dev libssl-dev openssl; \
 		cd $(TEMP_DIR) && \
@@ -105,8 +105,13 @@ install_kazu: install_git setup_pdm
 	cd $(WORK_ROOT) && \
 	git clone $(KAZU_REPO) && \
 	cd kazu  && \
-	pdm add --save-only $(CV_URL) $(NP_URL) && \
+	pdm add  $(CV_URL) $(NP_URL) && \
 	pdm install -v
+
+
+install_git:
+	@echo "Installing git..."
+	sudo apt install -y git
 
 overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
