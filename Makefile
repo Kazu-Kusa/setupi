@@ -54,17 +54,17 @@ install_python: setup_environment
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
-		sudo make install; \
+		sudo make altinstall; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
-	pip config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple && \
-	pip install --upgrade pip
+	pip3.11 config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple && \
+	pip3.11 install --upgrade pip
 setup_pdm: set_py_mirror
 	@echo "Setting up pdm..."
-	pip install pdm --verbose
+	pip3.11 install pdm --verbose
 	pdm config pypi.url https://pypi.tuna.tsinghua.edu.cn/simple
 
 check_modules: install_python
