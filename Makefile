@@ -3,8 +3,11 @@ WORK_ROOT := $(shell pwd)
 APT_FILE_PATH := /etc/apt/sources.list
 TEMP_DIR := $(WORK_ROOT)/temp
 PYTHON_VERSION := 3.11.0
+TAR_FILE=Python-$(PYTHON_VERSION).tar.xz
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
+PYTHON_DOWNLOAD_URL=$(MIRROR_HUAWEICLOUD)/python/$(PYTHON_VERSION)/$(TAR_FILE)
+PYPI_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
 CONFIG_FILE := /boot/config.txt
 ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
@@ -13,15 +16,15 @@ ARM_64BIT := arm_64bit=0
 KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
 CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
 NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
-.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help install_git
+.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help install_git clean_deprecated_python
 
-all: check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
+all:  install_utils check_modules set_py_mirror setup_pdm install_wiringpi config_hardware  bench install_kazu overclock
 # 检查并追加字符串到文件的函数
 define check-and-append-string
 	if grep -q $(2) $(1); then \
 		echo "String '$(2)' already exists in the file '$(1)', do nothing."; \
 	else \
-		echo "$(2)" >> $(1); \
+		sudo sh -c 'echo "$(2)" >> $(1)'; \
 		echo "String '$(2)' appended to the file '$(1)."; \
 	fi
 endef
@@ -43,14 +46,24 @@ setup_environment:
 	sudo chmod 777 $(TEMP_DIR)
 	sudo apt install -y  gcc cmake
 
-install_python: setup_environment
+clean_deprecated_python:
+	sudo apt -y remove python3
+
+install_python: setup_environment clean_deprecated_python
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
 	if ! python3 --version 2>&1 | grep -qF $(PYTHON_VERSION); then \
 		echo "Python $(PYTHON_VERSION) not found, installing dependencies..."; \
 		sudo apt install -y build-essential libffi-dev libssl-dev openssl; \
 		cd $(TEMP_DIR) && \
-		wget $(MIRROR_HUAWEICLOUD)/python/$(PYTHON_VERSION)/Python-$(PYTHON_VERSION).tar.xz && \
-		tar -xf Python-$(PYTHON_VERSION).tar.xz && \
+		\
+		if [ ! -f "$$TAR_FILE" ]; then \
+			echo "Tarball not found, downloading Python-$(PYTHON_VERSION).tar.xz..."; \
+			wget $(PYTHON_DOWNLOAD_URL); \
+		else \
+			echo "Tarball Python-$(PYTHON_VERSION).tar.xz already downloaded."; \
+		fi \
+		&& \
+		tar -xf $(TAR_FILE) && \
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
@@ -60,13 +73,13 @@ install_python: setup_environment
 	fi
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
-	sudo rm /etc/pip.conf && \
-	pip3.11 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+
+	pip3.11 config set global.index-url $(PYPI_INDEX) && \
 	pip3.11 install --upgrade pip
 setup_pdm: set_py_mirror
 	@echo "Setting up pdm..."
 	pip3.11 install pdm --verbose
-	pdm config pypi.url https://pypi.tuna.tsinghua.edu.cn/simple
+	pdm config pypi.url $(PYPI_INDEX)
 
 check_modules: install_python
 	@echo "Checking Python modules..."
@@ -102,10 +115,16 @@ install_sysbench:
 
 
 install_kazu: install_git setup_pdm
-	@echo "Cloning kazu..."
-	cd $(WORK_ROOT) && \
-	git clone $(KAZU_REPO) && \
-	cd kazu  && \
+	@echo "Checking for existing kazu directory..."
+	if [ -d "$(WORK_ROOT)/kazu" ]; then \
+		echo "Directory 'kazu' already exists. Skipping clone step."; \
+	else \
+		echo "Cloning kazu..."; \
+		cd $(WORK_ROOT) && \
+		git clone $(KAZU_REPO) && \
+	fi \
+	&& \
+	cd kazu && \
 	pdm add  $(CV_URL) $(NP_URL) && \
 	pdm install -v
 
