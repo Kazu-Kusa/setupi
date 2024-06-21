@@ -81,10 +81,10 @@ install_wiringpi:
 
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
+	sudo raspi-config nonint do_fan 0 18 60000
 	sudo raspi-config nonint do_i2c 0
 	sudo raspi-config nonint do_spi 0
-	sudo raspi-config nonint do_gpio 0
-	sudo raspi-config nonint do_fan 0 18 60000
+	sudo raspi-config nonint do_rgpio 0
 	sudo apt-get install -y libtinfo-dev raspberrypi-kernel-headers libpigpiod-if2-1 pigpiod
 	@if ! systemctl is-enabled pigpiod >/dev/null 2>&1; then \
 		sudo systemctl enable pigpiod && sudo pigpiod && echo "pigpiod enabled on startup"; \
