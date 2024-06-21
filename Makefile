@@ -60,6 +60,7 @@ install_python: setup_environment
 	fi
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
+	sudo rm /etc/pip.conf && \
 	pip3.11 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
 	pip3.11 install --upgrade pip
 setup_pdm: set_py_mirror
