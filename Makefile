@@ -81,7 +81,7 @@ install_wiringpi:
 
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
-	sudo raspi-config nonint do_fan 0 18 60000
+	sudo raspi-config nonint do_fan 0 18 60
 	sudo raspi-config nonint do_i2c 0
 	sudo raspi-config nonint do_spi 0
 	sudo raspi-config nonint do_rgpio 0
