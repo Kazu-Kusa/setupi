@@ -168,6 +168,14 @@ install_utils: upgrade_apt
 	else \
 		echo "fish is already installed."; \
 	fi
+
+	# 检查并安装vim
+	if ! command -v vim &> /dev/null; then \
+		echo "Installing vim..."; \
+		sudo apt install -y vim; \
+	else \
+		echo "vim is already installed."; \
+	fi
 help:
 	@echo "all: all"
 	@echo "setup_environment: setup environment for installation of the project"
