@@ -60,7 +60,7 @@ install_python: setup_environment clean_deprecated_python
 			wget $(PYTHON_DOWNLOAD_URL); \
 		else \
 			echo "Tarball Python-$(PYTHON_VERSION).tar.xz already downloaded."; \
-		fi \
+		fi && \
 		tar -xf $(TAR_FILE) && \
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
@@ -120,7 +120,7 @@ install_kazu: install_git setup_pdm
 		echo "Cloning kazu..."; \
 		cd $(WORK_ROOT) && \
 		git clone $(KAZU_REPO); \
-	fi \
+	fi 	&& \
 	cd $(WORK_ROOT)/kazu && \
 	pdm add  $(CV_URL) $(NP_URL) && \
 	pdm install -v
