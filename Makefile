@@ -129,7 +129,7 @@ install_kazu: install_utils setup_pdm
 	pdm add  $(CV_URL) $(NP_URL) && \
 	pdm install -v && \
 	pdm build && \
-	python$(SIMPLIFIED_PY_VERSION) -m pip install dist/*whl
+	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
 
 
 
