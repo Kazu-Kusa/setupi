@@ -113,14 +113,14 @@ clean:
 
 install_kazu: install_utils setup_pdm
 	@echo "Checking for existing kazu directory..."
-	if [ -d "$(WORK_ROOT)/kazu" ]; then \
+	cd && \
+	if [ -d "kazu" ]; then \
 		echo "Directory 'kazu' already exists. Skipping clone step."; \
 	else \
 		echo "Cloning kazu..."; \
-		cd $(WORK_ROOT) && \
 		git clone $(KAZU_REPO); \
 	fi 	&& \
-	cd $(WORK_ROOT)/kazu && \
+	cd kazu && \
 	pdm add  $(CV_URL) $(NP_URL) && \
 	pdm install -v
 
