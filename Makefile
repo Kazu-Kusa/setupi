@@ -146,27 +146,27 @@ bench:install_sysbench
 
 install_utils: upgrade_apt
 	# 检查并安装htop
-	if ! command -v htop &> /dev/null; then
-		echo "Installing htop..."
-		sudo apt install -y htop
-	else
-		echo "htop is already installed."
+	if ! command -v htop &> /dev/null; then \
+		echo "Installing htop..."; \
+		sudo apt install -y htop; \
+	else \
+		echo "htop is already installed."; \
 	fi
 
 	# 检查并安装git
-	if ! command -v git &> /dev/null; then
-		echo "Installing git..."
-		sudo apt install -y git
-	else
-		echo "git is already installed."
+	if ! command -v git &> /dev/null; then \
+		echo "Installing git..."; \
+		sudo apt install -y git; \
+	else \
+		echo "git is already installed."; \
 	fi
 
 	# 检查并安装fish shell
-	if ! command -v fish &> /dev/null; then
-		echo "Installing fish..."
-		sudo apt install -y fish
-	else
-		echo "fish is already installed."
+	if ! command -v fish &> /dev/null; then \
+		echo "Installing fish..."; \
+		sudo apt install -y fish; \
+	else \
+		echo "fish is already installed."; \
 	fi
 help:
 	@echo "all: all"
