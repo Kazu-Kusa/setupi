@@ -17,6 +17,9 @@ ARM_64BIT := arm_64bit=0
 KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
 CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
 NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
+
+PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages.git
+REPO_NAME :=built-packages
 .PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror \
 		setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu \
  		overclock bench install_utils help install_git
@@ -50,7 +53,17 @@ setup_environment:
 	sudo chmod 777 $(TEMP_DIR)
 	sudo apt install -y  gcc cmake
 
-
+install_python311:
+	@echo "install python3.11.0 from built binary"
+	cd $(TEMP_DIR); &&\
+  	if [ -d "$(REPO_NAME)"] \
+  		echo "repo is already cloned, skip"; \
+  	else \
+  		git clone $(PACKAGES_REPO); \
+  	fi &&\
+	cat $(REPO_NAME)/*gz* | tar -xvzf - &&\
+	cd Python-3.11.0 &&\
+	sudo make install
 
 install_python: setup_environment
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
@@ -60,7 +73,7 @@ install_python: setup_environment
   		sudo apt -y remove python3; \
 		sudo apt install -y build-essential libffi-dev libssl-dev openssl; \
 		cd $(TEMP_DIR); \
-		if [ ! -f "$$TAR_FILE" ]; then \
+		if [ ! -f "$(TAR_FILE)" ]; then \
 			echo "Tarball not found, downloading Python-$(PYTHON_VERSION).tar.xz..."; \
 			wget $(PYTHON_DOWNLOAD_URL); \
 		else \
@@ -70,7 +83,7 @@ install_python: setup_environment
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
-		sudo make altinstall; \
+		sudo make install; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
