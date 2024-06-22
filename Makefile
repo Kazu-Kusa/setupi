@@ -3,6 +3,7 @@ WORK_ROOT := $(shell pwd)
 APT_FILE_PATH := /etc/apt/sources.list
 TEMP_DIR := $(WORK_ROOT)/temp
 PYTHON_VERSION := 3.11.0
+SIMPLIFIED_PY_VERSION := $(subst .0,,${PYTHON_VERSION})
 TAR_FILE=Python-$(PYTHON_VERSION).tar.xz
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
@@ -76,17 +77,17 @@ install_python: setup_environment
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
 
-	pip3.11 config set global.index-url $(PYPI_INDEX) && \
-	pip3.11 install --upgrade pip
+	pip$(SIMPLIFIED_PY_VERSION) config set global.index-url $(PYPI_INDEX) && \
+	pip$(SIMPLIFIED_PY_VERSION) install --upgrade pip
 setup_pdm: set_py_mirror
 	@echo "Setting up pdm..."
-	pip3.11 install pdm --verbose
+	pip$(SIMPLIFIED_PY_VERSION) install pdm --verbose
 	pdm config pypi.url $(PYPI_INDEX)
 
 check_modules: install_python
 	@echo "Checking Python modules..."
-	@[ -z "$(python3 -c 'import ssl' 2>&1)" ] || (echo "ssl module installed." && exit 0) || (echo "ssl module not found." && make install_python)
-	@[ -z "$(python3 -c 'import ctypes' 2>&1)" ] || (echo "ctypes module installed." && exit 0) || (echo "ctypes module not found." && make install_python)
+	@[ -z "$(python$(SIMPLIFIED_PY_VERSION) -c 'import ssl' 2>&1)" ] || (echo "ssl module installed." && exit 0) || (echo "ssl module not found." && make install_python)
+	@[ -z "$(python$(SIMPLIFIED_PY_VERSION) -c 'import ctypes' 2>&1)" ] || (echo "ctypes module installed." && exit 0) || (echo "ctypes module not found." && make install_python)
 
 install_wiringpi:
 	@command -v gpio || (echo "Installing WiringPi..." && \
@@ -126,7 +127,9 @@ install_kazu: install_utils setup_pdm
 	fi 	&& \
 	cd kazu && \
 	pdm add  $(CV_URL) $(NP_URL) && \
-	pdm install -v
+	pdm install -v && \
+	pdm build && \
+	python$(SIMPLIFIED_PY_VERSION) -m pip install dist/*whl
 
 
 
