@@ -16,9 +16,12 @@ ARM_64BIT := arm_64bit=0
 KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
 CV_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/opencv_python_headless-4.9.0.80-cp311-cp311-linux_armv7l.whl
 NP_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30/numpy-1.26.4-cp311-cp311-linux_armv7l.whl
-.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu overclock bench install_utils help install_git clean_deprecated_python
+.PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror \
+		setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu \
+ 		overclock bench install_utils help install_git
 
-all:  install_utils check_modules set_py_mirror setup_pdm install_wiringpi config_hardware   install_kazu overclock bench
+all:  install_utils check_modules set_py_mirror setup_pdm \
+	  install_wiringpi config_hardware install_kazu overclock bench
 # 检查并追加字符串到文件的函数
 define check-and-append-string
 	if grep -q $(2) $(1); then \
@@ -46,13 +49,14 @@ setup_environment:
 	sudo chmod 777 $(TEMP_DIR)
 	sudo apt install -y  gcc cmake
 
-clean_deprecated_python:
-	sudo apt -y remove python3
 
-install_python: setup_environment clean_deprecated_python
+
+install_python: setup_environment
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
 	if ! python3 --version 2>&1 | grep -qF $(PYTHON_VERSION); then \
 		echo "Python $(PYTHON_VERSION) not found, installing dependencies..."; \
+  		echo "removing clean_deprecated_python3";\
+  		sudo apt -y remove python3; \
 		sudo apt install -y build-essential libffi-dev libssl-dev openssl; \
 		cd $(TEMP_DIR); \
 		if [ ! -f "$$TAR_FILE" ]; then \
