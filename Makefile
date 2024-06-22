@@ -108,11 +108,10 @@ clean:
 	@echo "Cleaning up..."
 	rm -rf $(TEMP_DIR)
 
-install_sysbench:
-	sudo apt install -y sysbench
 
 
-install_kazu: install_git setup_pdm
+
+install_kazu: install_utils setup_pdm
 	@echo "Checking for existing kazu directory..."
 	if [ -d "$(WORK_ROOT)/kazu" ]; then \
 		echo "Directory 'kazu' already exists. Skipping clone step."; \
@@ -126,9 +125,7 @@ install_kazu: install_git setup_pdm
 	pdm install -v
 
 
-install_git:
-	@echo "Installing git..."
-	sudo apt install -y git
+
 
 overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
@@ -138,7 +135,7 @@ overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),"avoid_warnings=1")
 	@echo "注意：如果超频设置更改后必须要重启后才会生效"
 
-bench:install_sysbench
+bench:install_utils
 	sysbench cpu --cpu-max-prime=10000 --threads=4 run
 
 	echo "Usually, the Event per Second  is around 460~560"
@@ -175,6 +172,14 @@ install_utils: upgrade_apt
 		sudo apt install -y vim; \
 	else \
 		echo "vim is already installed."; \
+	fi
+
+	# 检查并安装sysbench
+	if ! command -v sysbench &> /dev/null; then \
+		echo "Installing sysbench..."; \
+		sudo apt install -y sysbench; \
+	else \
+		echo "sysbench is already installed."; \
 	fi
 help:
 	@echo "all: all"
