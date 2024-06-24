@@ -24,7 +24,7 @@ PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-pa
 REPO_NAME :=built-packages
 .PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror \
 		setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu \
- 		overclock bench install_utils help install_git
+ 		overclock bench install_utils help install_git install_python311
 
 all:  install_utils check_modules set_py_mirror setup_pdm \
 	  install_wiringpi config_hardware install_kazu overclock bench
@@ -55,7 +55,7 @@ setup_environment:
 	sudo chmod 777 $(TEMP_DIR)
 	sudo apt install -y  gcc cmake
 
-install_python311:
+install_python311: setup_environment
 	@echo "install python3.11.0 from built binary"
 	cd $(TEMP_DIR) &&\
   	if [ -d "$(REPO_NAME)" ]; then \
@@ -221,3 +221,4 @@ help:
 	@echo "bench: benchmark with sysbench"
 	@echo "install_utils: install utils"
 	@echo "overclock: overclock settings $(ARM_FREQ)| $(OVER_VOLTAGE)| $(CORE_FREQ)| $(ARM_64BIT)"
+	@echo "install_python311: install python3.11.0 from built binary, it only works on bullseye"
