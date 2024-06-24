@@ -56,12 +56,16 @@ setup_environment:
 install_python311:
 	@echo "install python3.11.0 from built binary"
 	cd $(TEMP_DIR) &&\
-  	if [ -d "$(REPO_NAME)"] \
+  	if [ -d "$(REPO_NAME)" ] then \
   		echo "repo is already cloned, skip"; \
   	else \
   		git clone $(PACKAGES_REPO); \
   	fi &&\
-	cat $(REPO_NAME)/*gz* | tar -xvzf - &&\
+  	if [ -d "Python-3.11.0" ] then \
+      		echo "Already unpacked"; \
+	else \
+		cat $(REPO_NAME)/*gz* | tar -xvzf - ; \
+	fi &&\
 	cd Python-3.11.0 &&\
 	sudo make install
 
