@@ -55,7 +55,7 @@ setup_environment:
 
 install_python311:
 	@echo "install python3.11.0 from built binary"
-	cd $(TEMP_DIR); &&\
+	cd $(TEMP_DIR) &&\
   	if [ -d "$(REPO_NAME)"] \
   		echo "repo is already cloned, skip"; \
   	else \
