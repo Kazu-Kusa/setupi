@@ -2,6 +2,16 @@
 > Auto config the dev env of the pi
 ---
 
+> **Note**:
+> 
+> This Makefile were written and tested in env as below
+> 
+> - Hardware: Raspberry Pi 4B 
+> - Operating System: Raspberry Pi OS (Legacy)  Lite ,32-bit
+> - Kernel Version: 6.1
+> - Debian Version: 11(bullseye)
+
+
 ## Install
 
 Download the script to anywhere you want
