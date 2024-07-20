@@ -69,7 +69,7 @@ install_python311: setup_environment
 		cat $(REPO_NAME)/*gz* | tar -xvzf - ; \
 	fi &&\
 	cd Python-3.11.0 &&\
-	sudo make install
+	sudo make altinstall
 
 install_python: setup_environment
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
@@ -89,7 +89,7 @@ install_python: setup_environment
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
-		sudo make install; \
+		sudo make altinstall; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
@@ -222,3 +222,4 @@ help:
 	@echo "install_utils: install utils"
 	@echo "overclock: overclock settings $(ARM_FREQ)| $(OVER_VOLTAGE)| $(CORE_FREQ)| $(ARM_64BIT)"
 	@echo "install_python311: install python3.11.0 from built binary, it only works on bullseye"
+	@echo "install_kazu: install kazu from the git repo"
