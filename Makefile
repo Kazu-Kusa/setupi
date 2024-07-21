@@ -27,7 +27,8 @@ REPO_NAME :=built-packages
  		overclock bench install_utils help install_git install_python311
 
 all:  install_utils check_modules set_py_mirror setup_pdm \
-	  install_wiringpi config_hardware install_kazu overclock bench
+	  install_wiringpi config_hardware install_kazu_using_built_packages overclock bench \
+	  install_kazu
 # 检查并追加字符串到文件的函数
 define check-and-append-string
 	if grep -q $(2) $(1); then \
@@ -135,7 +136,7 @@ clean:
 
 
 
-install_kazu: install_utils setup_pdm
+install_kazu_using_built_packages: install_utils setup_pdm
 	@echo "Checking for existing kazu directory..."
 	cd && \
 	if [ -d "kazu" ]; then \
@@ -150,6 +151,19 @@ install_kazu: install_utils setup_pdm
 	pdm build && \
 	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
 
+install_kazu: install_utils setup_pdm
+	@echo "Checking for existing kazu directory..."
+	cd && \
+	if [ -d "kazu" ]; then \
+		echo "Directory 'kazu' already exists. Skipping clone step."; \
+	else \
+		echo "Cloning kazu..."; \
+		git clone $(KAZU_REPO); \
+	fi 	&& \
+	cd kazu && \
+	pdm install -v && \
+	pdm build && \
+	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
 
 
 
@@ -223,3 +237,4 @@ help:
 	@echo "overclock: overclock settings $(ARM_FREQ)| $(OVER_VOLTAGE)| $(CORE_FREQ)| $(ARM_64BIT)"
 	@echo "install_python311: install python3.11.0 from built binary, it only works on bullseye"
 	@echo "install_kazu: install kazu from the git repo"
+	@echo "install_kazu_using_built_packages: install kazu from the git repo and use pre-built packages"
