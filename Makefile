@@ -161,6 +161,7 @@ install_kazu: install_utils setup_pdm
 		git clone $(KAZU_REPO); \
 	fi 	&& \
 	cd kazu && \
+	git stash && \
 	pdm install -v && \
 	pdm build && \
 	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
