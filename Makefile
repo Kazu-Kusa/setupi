@@ -70,7 +70,7 @@ install_python311: setup_environment
 		cat $(REPO_NAME)/*gz* | tar -xvzf - ; \
 	fi &&\
 	cd Python-3.11.0 &&\
-	sudo make altinstall
+	sudo make install
 
 install_python: setup_environment
 	@echo "Checking for Python $(PYTHON_VERSION) installation..."
@@ -90,7 +90,7 @@ install_python: setup_environment
 		cd Python-$(PYTHON_VERSION) && \
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
-		sudo make altinstall; \
+		sudo make install; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
