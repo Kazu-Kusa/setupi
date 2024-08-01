@@ -27,8 +27,7 @@ REPO_NAME :=built-packages
  		overclock bench install_utils help install_git install_python311
 
 all:  install_utils check_modules set_py_mirror setup_pdm \
-	  install_wiringpi config_hardware install_kazu_using_built_packages overclock bench \
-	  install_kazu
+	  install_wiringpi config_hardware install_kazu_using_built_packages overclock enable_32bit
 # 检查并追加字符串到文件的函数
 define check-and-append-string
 	if grep -q $(2) $(1); then \
@@ -172,9 +171,12 @@ overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
 	$(call check-and-append-string,$(CONFIG_FILE),$(OVER_VOLTAGE))
 	$(call check-and-append-string,$(CONFIG_FILE),$(CORE_FREQ))
-	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_64BIT))
 	$(call check-and-append-string,$(CONFIG_FILE),"avoid_warnings=1")
-	@echo "注意：如果超频设置更改后必须要重启后才会生效"
+	@echo "注意：如果超频设置更改后必须要重启后才会生效！"
+
+enable_32bit:
+	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_64BIT))
+	@echo "注意：如果切换为32bit运行模式后必须要重启后才会生效！若要执行install_kazu这是必须要完成的！"
 
 bench:install_utils
 	sysbench cpu --cpu-max-prime=10000 --threads=4 run
