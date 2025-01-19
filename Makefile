@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 WORK_ROOT := $(shell pwd)
 APT_FILE_PATH := /etc/apt/sources.list
+APT_FILE_PATH0 := /etc/apt/sources.list.d/raspi.list
 TEMP_DIR := $(WORK_ROOT)/temp
 PYTHON_VERSION := 3.11.0
 SIMPLIFIED_PY_VERSION := $(subst .0,,${PYTHON_VERSION})
@@ -14,13 +15,15 @@ ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
 CORE_FREQ := core_freq=750
 ARM_64BIT := arm_64bit=0
-KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
-
-GIT_RELEASE_BASE_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
+#KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git 换原网站下载
+KAZU_REPO :=https://github.com/Kazu-Kusa/kazu
+#GIT_RELEASE_BASE_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30 换原网站下载
+GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 CV_URL := $(GIT_RELEASE_BASE_URL)/opencv_python_headless-4.10.0.84-cp311-cp311-linux_armv7l.whl
 NP_URL := $(GIT_RELEASE_BASE_URL)/numpy-2.0.0-cp311-cp311-linux_armv7l.whl
 
-PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages.git
+#PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages.git 换原网站下载
+PACKAGES_REPO :=https://github.com/Kazu-Kusa/built-packages.git
 REPO_NAME :=built-packages
 .PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror \
 		setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu \
@@ -42,6 +45,7 @@ set_apt_mirror:
 	@echo "Setting apt mirror..."
 	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspbian/raspbian/ bullseye main non-free contrib rpi' > $(APT_FILE_PATH)"
 	sudo sh -c "echo 'deb-src $(MIRROR_TUNA)/raspbian/raspbian/ bullseye main non-free contrib rpi' >> $(APT_FILE_PATH)"
+	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspberrypi/ bullseye main'>$(APT_FILE_PATH0)"
 
 update_apt:set_apt_mirror
 	sudo apt update
