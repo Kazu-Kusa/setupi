@@ -15,10 +15,10 @@ ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
 CORE_FREQ := core_freq=750
 ARM_64BIT := arm_64bit=0
-KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
-#KAZU_REPO :=https://github.com/Kazu-Kusa/kazu
-GIT_RELEASE_BASE_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
-#GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
+#KAZU_REPO := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/kazu.git
+KAZU_REPO :=https://github.com/Kazu-Kusa/kazu
+#GIT_RELEASE_BASE_URL := https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
+GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 CV_URL := $(GIT_RELEASE_BASE_URL)/opencv_python_headless-4.10.0.84-cp311-cp311-linux_armv7l.whl
 NP_URL := $(GIT_RELEASE_BASE_URL)/numpy-2.0.0-cp311-cp311-linux_armv7l.whl
 
