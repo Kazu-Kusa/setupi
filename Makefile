@@ -122,7 +122,7 @@ install_wiringpi:
 	cd WiringPi && \
 	echo "Building and installing..." && \
 	sudo ./build debian && \
-	sudo apt install ./debian-template/wiringpi-*.deb && \
+	sudo apt install ./debian-template/wiringpi_*_armf.deb && \
 	echo "WiringPi installation complete." && \
 	gpio -v \
 	)
