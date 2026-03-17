@@ -116,9 +116,15 @@ install_wiringpi:
 	@command -v gpio || (echo "Installing WiringPi..." && \
 	cd $(TEMP_DIR) && \
 	rm -f wiringpi-latest.deb && \
-	wget https://project-downloads.drogon.net/wiringpi-latest.deb && \
-	sudo dpkg -i wiringpi-latest.deb)
-
+	if [ ! -d "WiringPi" ]; then \
+		git clone https://github.com/WiringPi/WiringPi.git; \
+	fi && \
+	cd WiringPi && \
+	echo "Building and installing..." && \
+	sudo ./build.sh && \
+	echo "WiringPi installation complete." && \
+	/user/local/bin/gpio -v \
+	)
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
 	sudo raspi-config nonint do_fan 0 18 60
