@@ -121,9 +121,10 @@ install_wiringpi:
 	fi && \
 	cd WiringPi && \
 	echo "Building and installing..." && \
-	sudo ./build.sh && \
+	sudo ./build debian && \
+	sudo apt install ./debian-template/wiringpi-*.deb && \
 	echo "WiringPi installation complete." && \
-	/user/local/bin/gpio -v \
+	gpio -v \
 	)
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
