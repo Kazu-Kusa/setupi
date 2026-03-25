@@ -94,6 +94,7 @@ install_python: setup_environment
 		./configure --enable-optimizations --enable-shared && \
 		make -j4 && \
 		sudo make install; \
+		sudo ldconfig; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
