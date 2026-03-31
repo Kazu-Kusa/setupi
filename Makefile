@@ -7,7 +7,7 @@ PYTHON_VERSION := 3.11.0
 SIMPLIFIED_PY_VERSION := $(subst .0,,${PYTHON_VERSION})
 TAR_FILE=Python-$(PYTHON_VERSION).tar.xz
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
-WIRING := https://github.com/WiringPi/WiringPi.git
+WIRING_URL := $(GIT_RELEASE_BASE_URL)/WiringPi_3.18.zip
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
 PYTHON_DOWNLOAD_URL=$(MIRROR_HUAWEICLOUD)/python/$(PYTHON_VERSION)/$(TAR_FILE)
 PYPI_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
@@ -119,9 +119,11 @@ install_wiringpi:
 	cd $(TEMP_DIR) && \
 	rm -f wiringpi-latest.deb && \
 	if [ ! -d "WiringPi" ]; then \
-		git clone $(WIRING); \
+		git clone $(WIRING_URL); \
+		unzip WiringPi_3.18.zip; \
 	fi && \
-	cd WiringPi && \
+	cd WiringPi_3.18
+	 && \
 	echo "Building and installing..." && \
 	sudo ./build debian && \
 	sudo apt install ./debian-template/wiringpi_*_armhf.deb && \
