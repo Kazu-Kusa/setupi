@@ -7,7 +7,7 @@ PYTHON_VERSION := 3.11.0
 SIMPLIFIED_PY_VERSION := $(subst .0,,${PYTHON_VERSION})
 TAR_FILE=Python-$(PYTHON_VERSION).tar.xz
 MIRROR_TUNA := https://mirrors.tuna.tsinghua.edu.cn
-WIRING_URL := $(GIT_RELEASE_BASE_URL)/WiringPi_3.18.zip
+WIRING_URL := https://raw.github.com/Kazu-Kusa/built-packages/main/WiringPi_3.18.zip
 MIRROR_HUAWEICLOUD := https://mirrors.huaweicloud.com
 PYTHON_DOWNLOAD_URL=$(MIRROR_HUAWEICLOUD)/python/$(PYTHON_VERSION)/$(TAR_FILE)
 PYPI_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
@@ -26,6 +26,8 @@ NP_URL := $(GIT_RELEASE_BASE_URL)/numpy-2.0.0-cp311-cp311-linux_armv7l.whl
 PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages.git
 #PACKAGES_REPO :=https://github.com/Kazu-Kusa/built-packages.git
 REPO_NAME :=built-packages
+SYSTEM_VERSION1 := bullseye
+SYSTEM_VERSION2 := bookworm
 .PHONY: all set_apt_mirror update_apt upgrade_apt setup_environment install_python set_py_mirror \
 		setup_pdm check_modules install_wiringpi config_hardware clean install_sysbench install_kazu \
  		overclock bench install_utils help install_git install_python311
@@ -44,9 +46,9 @@ endef
 
 set_apt_mirror:
 	@echo "Setting apt mirror..."
-	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspbian/raspbian/ bullseye main non-free contrib rpi' > $(APT_FILE_PATH)"
-	sudo sh -c "echo 'deb-src $(MIRROR_TUNA)/raspbian/raspbian/ bullseye main non-free contrib rpi' >> $(APT_FILE_PATH)"
-	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspberrypi/ bullseye main'>$(APT_FILE_PATH0)"
+	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspbian/raspbian/ $(SYSTEM_VERSION1) main non-free contrib rpi' > $(APT_FILE_PATH)"
+	sudo sh -c "echo 'deb-src $(MIRROR_TUNA)/raspbian/raspbian/ $(SYSTEM_VERSION1) main non-free contrib rpi' >> $(APT_FILE_PATH)"
+	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspberrypi/ $(SYSTEM_VERSION1)  main'>$(APT_FILE_PATH0)"
 
 update_apt:set_apt_mirror
 	sudo apt update
@@ -58,7 +60,14 @@ setup_environment:
 	@echo "Setting up environment..."
 	mkdir -p $(TEMP_DIR)
 	sudo chmod 777 $(TEMP_DIR)
-	sudo apt install -y  gcc cmake
+	sudo apt install -y  gcc cmake  build-essential \
+	libssl-dev libbz2-dev libreadline-dev \
+	libsqlite3-dev libncursesw5-dev libgdbm-dev \
+	libdb-dev liblzma-dev libffi-dev \
+	zlib1g-dev tk-dev uuid-dev \
+	libc6-dev \
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh 
+
 
 install_python311: setup_environment
 	@echo "install python3.11.0 from built binary"
@@ -96,6 +105,8 @@ install_python: setup_environment
 		make -j4 && \
 		sudo make install; \
 		sudo ldconfig; \
+		sudo rm /usr/bin/python3; \
+		sudo ln -s /usr/local/bin/python3.11 /usr/bin/python3; \
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
@@ -104,10 +115,11 @@ set_py_mirror:install_python
 
 	pip$(SIMPLIFIED_PY_VERSION) config set global.index-url $(PYPI_INDEX) && \
 	pip$(SIMPLIFIED_PY_VERSION) install --upgrade pip
-setup_pdm: set_py_mirror
-	@echo "Setting up pdm..."
-	pip$(SIMPLIFIED_PY_VERSION) install pdm --verbose
-	pdm config pypi.url $(PYPI_INDEX)
+setup_uv: set_py_mirror
+	@echo "Setting up uv..."
+	pip install uv
+	@grep -qxF 'export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"' ~/.bashrc || \
+	echo 'export UV_DEFAULT_INDEX="https://pypi.tuna.tsinghua.edu.cn/simple"' >> ~/.bashrc
 
 check_modules: install_python
 	@echo "Checking Python modules..."
@@ -119,17 +131,17 @@ install_wiringpi:
 	cd $(TEMP_DIR) && \
 	rm -f wiringpi-latest.deb && \
 	if [ ! -d "WiringPi" ]; then \
-		git clone $(WIRING_URL); \
+		wget $(WIRING_URL); \
 		unzip WiringPi_3.18.zip; \
 	fi && \
-	cd WiringPi_3.18
-	 && \
+	cd WiringPi_3.18 && \
 	echo "Building and installing..." && \
-	sudo ./build debian && \
-	sudo apt install ./debian-template/wiringpi_*_armhf.deb && \
+	chmod +x ./build && \
+	sudo ./build && \
+	sudo  && \
 	echo "WiringPi installation complete." && \
-	gpio -v \
-	)
+	gpio -v \)
+
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
 	sudo raspi-config nonint do_fan 0 18 60
@@ -160,9 +172,9 @@ install_kazu_using_built_packages: install_utils setup_pdm
 		git clone $(KAZU_REPO); \
 	fi 	&& \
 	cd kazu && \
-	pdm add  $(CV_URL) $(NP_URL) && \
-	pdm install -v && \
-	pdm build && \
+	uv add  $(CV_URL) $(NP_URL) && \
+	uv install -v && \
+	uv build && \
 	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
 
 install_kazu: install_utils setup_pdm
@@ -175,10 +187,17 @@ install_kazu: install_utils setup_pdm
 		git clone $(KAZU_REPO); \
 	fi 	&& \
 	cd kazu && \
+	git clone https://githubfast.com/razorblade23/PyCrucible.git
+	cd PyCrucible && \
+	cargo build -p pycrucible_runner --release && \
+	cargo build -p pycrucible --release && \
+	cd .. && \
+	uv pip install ./PyCrucible && \
+
 	git stash && \
-	pdm install -v && \
-	pdm build && \
-	pip$(SIMPLIFIED_PY_VERSION) install dist/*whl
+	uv install -v && \
+	uv build && \
+	uv pip install dist/*whl
 
 
 
