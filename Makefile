@@ -61,11 +61,11 @@ setup_environment:
 	mkdir -p $(TEMP_DIR)
 	sudo chmod 777 $(TEMP_DIR)
 	sudo apt install -y  gcc cmake  build-essential \
-	libssl-dev libbz2-dev libreadline-dev \
-	libsqlite3-dev libncursesw5-dev libgdbm-dev \
-	libdb-dev liblzma-dev libffi-dev \
-	zlib1g-dev tk-dev uuid-dev \
-	libc6-dev \
+		libssl-dev libbz2-dev libreadline-dev \
+		libsqlite3-dev libncursesw5-dev libgdbm-dev \
+		libdb-dev liblzma-dev libffi-dev \
+		zlib1g-dev tk-dev uuid-dev \
+		libc6-dev
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh 
 
 
@@ -110,11 +110,13 @@ install_python: setup_environment
 	else \
 		echo "Python $(PYTHON_VERSION) is already installed."; \
 	fi
+
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
 
 	pip$(SIMPLIFIED_PY_VERSION) config set global.index-url $(PYPI_INDEX) && \
 	pip$(SIMPLIFIED_PY_VERSION) install --upgrade pip
+
 setup_uv: set_py_mirror
 	@echo "Setting up uv..."
 	pip install uv
@@ -138,7 +140,6 @@ install_wiringpi:
 	echo "Building and installing..." && \
 	chmod +x ./build && \
 	sudo ./build && \
-	sudo  && \
 	echo "WiringPi installation complete." && \
 	gpio -v \)
 
