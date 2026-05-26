@@ -22,6 +22,7 @@ GIT_RELEASE_BASE_URL := https://githubfast.com/Kazu-Kusa/built-packages/releases
 #GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 CV_URL := $(GIT_RELEASE_BASE_URL)/opencv_python_headless-4.10.0.84-cp311-cp311-linux_armv7l.whl
 NP_URL := $(GIT_RELEASE_BASE_URL)/numpy-2.0.0-cp311-cp311-linux_armv7l.whl
+PYCRUCIBLE_URL := https://githubfast.com/Kazu-Kusa/built-packages/raw/main/pycrucible-armv7.tar.gz
 
 PACKAGES_REPO :=https://mirror.ghproxy.com/https://github.com/Kazu-Kusa/built-packages.git
 #PACKAGES_REPO :=https://github.com/Kazu-Kusa/built-packages.git
@@ -192,20 +193,17 @@ install_kazu: install_utils setup_uv
 		echo "Cloning kazu..."; \
 		git clone $(KAZU_REPO); \
 	fi && \
-	cd ~/kazu && \
-	if [ ! -d "PyCrucible" ]; then \
-		git clone https://githubfast.com/razorblade23/PyCrucible.git; \
+	cd ~ && \
+	if [ ! -d "pycrucible*" ]; then \
+		wget $(PYCRUCIBLE_URL); && \
+		tar -xzvf pycrucible-armv7.tar.gz \
 	else \
 		echo "aaaPyCrucible already exists, skipping clone..."; \
 	fi && \
-	cd PyCrucible && \
-	cargo build -p pycrucible_runner --release && \
-	cargo build -p pycrucible --release && \
-	uv tool install ./PyCrucible && \
+	sudo cp pycrucible /usr/local/bin/ && \
+	sudo chmod +x /usr/local/bin/pycrucible && \
 	cd ~/kazu && \
-	uv sync && \
-	uv build && \
-	uv tool install dist/*whl
+	uv tool install . 
 
 overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
