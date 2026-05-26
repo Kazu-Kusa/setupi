@@ -186,7 +186,7 @@ install_kazu: install_utils setup_uv
 	@echo "Checking for existing kazu directory..."
 	cd && \
 	if [ -d "kazu" ]; then \
-		echo "Directory 'kazu' already exists. Skipping clone step."; \
+		echo "AAAAAAAAAAAAAAADirectory 'kazu' already exists. Skipping clone step."; \
 	else \
 		echo "Cloning kazu..."; \
 		git clone $(KAZU_REPO); \
