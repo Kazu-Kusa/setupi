@@ -184,7 +184,8 @@ install_kazu_using_built_packages: install_utils setup_uv
 
 install_kazu: install_utils setup_uv
 	@echo "Checking for existing kazu directory..."
-	cd ~&& \
+	cd ~ && \
+	pwd && \
 	if [ -d "kazu" ]; then \
 		echo "aaaDirectory 'kazu' already exists. Skipping clone step."; \
 	else \
