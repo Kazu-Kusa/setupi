@@ -184,9 +184,9 @@ install_kazu_using_built_packages: install_utils setup_uv
 
 install_kazu: install_utils setup_uv
 	@echo "Checking for existing kazu directory..."
-	cd && \
+	cd ~&& \
 	if [ -d "kazu" ]; then \
-		echo "AAAAAAAAAAAAAAADirectory 'kazu' already exists. Skipping clone step."; \
+		echo "aaaDirectory 'kazu' already exists. Skipping clone step."; \
 	else \
 		echo "Cloning kazu..."; \
 		git clone $(KAZU_REPO); \
@@ -195,7 +195,7 @@ install_kazu: install_utils setup_uv
 	if [ ! -d "PyCrucible" ]; then \
 		git clone https://githubfast.com/razorblade23/PyCrucible.git; \
 	else \
-		echo "PyCrucible already exists, skipping clone..."; \
+		echo "aaaPyCrucible already exists, skipping clone..."; \
 	fi && \
 	cd PyCrucible && \
 	cargo build -p pycrucible_runner --release && \
