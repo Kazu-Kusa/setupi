@@ -16,9 +16,9 @@ ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
 CORE_FREQ := core_freq=750
 ARM_64BIT := arm_64bit=0
-KAZU_REPO := https://bgithub.xyz/Kazu-Kusa/kazu.git
+KAZU_REPO := https://githubfast.com/Kazu-Kusa/kazu.git
 #KAZU_REPO :=https://github.xyz/Kazu-Kusa/kazu
-GIT_RELEASE_BASE_URL := https://bgithub.xyz/Kazu-Kusa/built-packages/releases/download/2024.5.30
+GIT_RELEASE_BASE_URL := https://githubfast.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 #GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 CV_URL := $(GIT_RELEASE_BASE_URL)/opencv_python_headless-4.10.0.84-cp311-cp311-linux_armv7l.whl
 NP_URL := $(GIT_RELEASE_BASE_URL)/numpy-2.0.0-cp311-cp311-linux_armv7l.whl
@@ -44,6 +44,9 @@ define check-and-append-string
 	fi
 endef
 
+open_fan:
+	sudo raspi-gpio set 18 op dh
+
 set_apt_mirror:
 	@echo "Setting apt mirror..."
 	sudo sh -c "echo 'deb $(MIRROR_TUNA)/raspbian/raspbian/ $(SYSTEM_VERSION1) main non-free contrib rpi' > $(APT_FILE_PATH)"
@@ -56,6 +59,9 @@ update_apt:set_apt_mirror
 upgrade_apt:update_apt
 	sudo apt upgrade -y
 
+setup_uvtool:
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
 setup_environment:
 	@echo "Setting up environment..."
 	mkdir -p $(TEMP_DIR)
@@ -66,7 +72,6 @@ setup_environment:
 		libdb-dev liblzma-dev libffi-dev \
 		zlib1g-dev tk-dev uuid-dev \
 		libc6-dev
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh 
 
 
 install_python311: setup_environment
@@ -113,7 +118,6 @@ install_python: setup_environment
 
 set_py_mirror:install_python
 	@echo "Setting Python mirror..."
-
 	pip$(SIMPLIFIED_PY_VERSION) config set global.index-url $(PYPI_INDEX) && \
 	pip$(SIMPLIFIED_PY_VERSION) install --upgrade pip
 
@@ -141,7 +145,7 @@ install_wiringpi:
 	chmod +x ./build && \
 	sudo ./build && \
 	echo "WiringPi installation complete." && \
-	gpio -v \)
+	gpio -v)
 
 config_hardware: install_wiringpi
 	@echo "Configuring hardware..."
@@ -193,12 +197,12 @@ install_kazu: install_utils setup_pdm
 	cargo build -p pycrucible_runner --release && \
 	cargo build -p pycrucible --release && \
 	cd .. && \
-	uv pip install ./PyCrucible && \
+	uv tool install ./PyCrucible && \
 
 	git stash && \
 	uv install -v && \
 	uv build && \
-	uv pip install dist/*whl
+	uv tool install dist/*whl
 
 
 
