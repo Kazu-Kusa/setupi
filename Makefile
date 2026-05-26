@@ -191,8 +191,12 @@ install_kazu: install_utils setup_pdm
 		echo "Cloning kazu..."; \
 		git clone $(KAZU_REPO); \
 	fi && \
-	cd kazu && \
-	git clone https://githubfast.com/razorblade23/PyCrucible.git && \
+	cd ~/kazu && \
+	if [ ! -d "PyCrucible" ]; then \
+		git clone https://githubfast.com/razorblade23/PyCrucible.git; \
+	else \
+		echo "PyCrucible already exists, skipping clone..."; \
+	fi && \
 	cd PyCrucible && \
 	cargo build -p pycrucible_runner --release && \
 	cargo build -p pycrucible --release && \
