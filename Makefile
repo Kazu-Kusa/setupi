@@ -16,7 +16,7 @@ ARM_FREQ := arm_freq=2100
 OVER_VOLTAGE := over_voltage=10
 CORE_FREQ := core_freq=750
 ARM_64BIT := arm_64bit=0
-KAZU_REPO := https://githubfast.com/Kazu-Kusa/kazu.git
+KAZU_REPO := https://githubfast.com/Kazu-Kusa/kazu
 #KAZU_REPO :=https://github.xyz/Kazu-Kusa/kazu
 GIT_RELEASE_BASE_URL := https://githubfast.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
 #GIT_RELEASE_BASE_URL := https://github.com/Kazu-Kusa/built-packages/releases/download/2024.5.30
