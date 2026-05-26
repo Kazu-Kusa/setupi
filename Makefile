@@ -59,7 +59,7 @@ update_apt:set_apt_mirror
 upgrade_apt:update_apt
 	sudo apt upgrade -y
 
-setup_uvtool:
+setup_rust:
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 setup_environment:
