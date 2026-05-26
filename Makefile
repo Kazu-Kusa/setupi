@@ -190,21 +190,17 @@ install_kazu: install_utils setup_pdm
 	else \
 		echo "Cloning kazu..."; \
 		git clone $(KAZU_REPO); \
-	fi 	&& \
+	fi && \
 	cd kazu && \
-	git clone https://githubfast.com/razorblade23/PyCrucible.git
+	git clone https://githubfast.com/razorblade23/PyCrucible.git && \
 	cd PyCrucible && \
 	cargo build -p pycrucible_runner --release && \
 	cargo build -p pycrucible --release && \
-	cd .. && \
 	uv tool install ./PyCrucible && \
-
-	git stash && \
-	uv install -v && \
+	cd ~/kazu && \
+	uv sync && \
 	uv build && \
 	uv tool install dist/*whl
-
-
 
 overclock:
 	$(call check-and-append-string,$(CONFIG_FILE),$(ARM_FREQ))
