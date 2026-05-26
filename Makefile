@@ -167,7 +167,7 @@ clean:
 
 
 
-install_kazu_using_built_packages: install_utils setup_pdm
+install_kazu_using_built_packages: install_utils setup_uv
 	@echo "Checking for existing kazu directory..."
 	cd && \
 	if [ -d "kazu" ]; then \
